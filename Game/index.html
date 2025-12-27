@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Growth 3D</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="ui-container">
+        <div class="likes-panel">
+            <div class="likes-text">Лайков собрано: <span id="like-count">1250</span></div>
+            <div class="progress-bar">
+                <div id="progress-fill" style="width: 60%;"></div>
+            </div>
+        </div>
+
+        <div class="levels-sidebar">
+            <div class="level-card past">
+                <div class="status-icon">✅</div>
+                <div class="level-info">УРОВЕНЬ 1: РОСТОК</div>
+            </div>
+            <div class="level-card active">
+                <div class="status-icon">🌱</div>
+                <div class="level-info">УРОВЕНЬ 2: САЖЕНЕЦ</div>
+                <div class="mini-progress"><div style="width: 40%;"></div></div>
+            </div>
+            <div class="level-card next">
+                <div class="status-icon">🔒</div>
+                <div class="level-info">УРОВЕНЬ 3: ДЕРЕВО</div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="bg"></canvas>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module" src="./src/main.js"></script>
+</body>
+</html>
