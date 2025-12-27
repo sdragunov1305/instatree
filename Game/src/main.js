@@ -25,7 +25,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 // Загрузка дерева
 const loader = new GLTFLoader();
 // Замените на путь к вашему файлу в папке public
-loader.load('./public/assets/models/tree_level_1.glb', (gltf) => {
+loader.load('./assets/models/tree_level_1.glb', (gltf) => {
     scene.add(gltf.scene);
     console.log("Дерево загружено!");
 }, undefined, (error) => {
@@ -39,3 +39,4 @@ function animate() {
 }
 
 animate();
+
