@@ -3,125 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instatree 3D</title>
+    <title>Tree Evolution</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        /* Встроенные стили, чтобы точно всё отобразилось */
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #1a1a1a; /* Темный фон, пока грузится 3D */
-            color: white;
-        }
-
-        canvas {
-            display: block;
-        }
-
-        #ui-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .sidebar {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: auto;
-        }
-
-        .level-card {
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid #444;
-            padding: 15px;
-            border-radius: 8px;
-            width: 200px;
-            backdrop-filter: blur(5px);
-        }
-
-        .level-card.active {
-            border-color: #00ffcc;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
-        }
-
-        .status {
-            font-size: 0.8em;
-            color: #888;
-            margin-bottom: 5px;
-        }
-
-        .progress-container {
-            position: absolute;
-            bottom: 30px;
-            left: 30px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 10px;
-            pointer-events: auto;
-        }
-
-        .bar {
-            width: 300px;
-            height: 10px;
-            background: #333;
-            border-radius: 5px;
-            margin-top: 10px;
-            overflow: hidden;
-        }
-
-        .fill {
-            width: 60%;
-            height: 100%;
-            background: linear-gradient(90deg, #ff00cc, #3333ff);
-        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; }
+        model-viewer { width: 100vw; height: 100vh; cursor: pointer; }
+        /* Скрываем все лишнее */
+        header, footer, .card, h1, p { display: none !important; }
     </style>
 </head>
 <body>
 
-    <canvas id="bg"></canvas>
+    <model-viewer 
+        id="tree-viewer"
+        src="public/assets/models/tree_level_1.glb" 
+        alt="3D Tree"
+        auto-rotate 
+        camera-controls
+        touch-action="none">
+    </model-viewer>
 
-    <div id="ui-layer">
-        <div class="progress-container">
-            <div>ПРОГРЕСС ЛАЙКОВ: 1250 / 2000</div>
-            <div class="bar"><div class="fill"></div></div>
-        </div>
+    <script>
+        // ПОПРОБУЙТЕ ПОМЕНЯТЬ ЭТУ СТРОКУ, ЕСЛИ ОШИБКА ОСТАНЕТСЯ:
+        // Вариант А: 'public/assets/models/' 
+        // Вариант Б: 'assets/models/'
+        const folderPath = 'public/assets/models/'; 
 
-        <div class="sidebar">
-            <div class="level-card">
-                <div class="status">✅ ПРОЙДЕНО</div>
-                <div>УРОВЕНЬ 1: РОСТОК</div>
-            </div>
-            <div class="level-card active">
-                <div class="status" style="color: #00ffcc;">● ТЕКУЩИЙ</div>
-                <div>УРОВЕНЬ 2: САЖЕНЕЦ</div>
-            </div>
-            <div class="level-card" style="opacity: 0.5;">
-                <div class="status">🔒 ЗАБЛОКИРОВАНО</div>
-                <div>УРОВЕНЬ 3: ДЕРЕВО</div>
-            </div>
-        </div>
-    </div>
+        const files = [
+            'tree_level_1.glb',
+            'tree_level_2.glb',
+            'tree_level_3.glb',
+            'tree_level_4.glb',
+            'tree_level_5.glb'
+        ];
 
-    <script type="importmap">
-        {
-          "imports": {
-            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-          }
+        let idx = 0;
+        const viewer = document.getElementById('tree-viewer');
+
+        // Устанавливаем начальную модель правильно
+        viewer.src = folderPath + files[idx];
+
+        function swap() {
+            idx = (idx + 1) % files.length;
+            const newPath = folderPath + files[idx];
+            viewer.src = newPath;
+            console.log("Пытаюсь загрузить:", newPath);
         }
+
+        window.addEventListener('click', swap);
+        window.addEventListener('keydown', (e) => { if(e.code === 'Space') swap(); });
+
+        // Ловим ошибку загрузки, чтобы понять, какой путь не подошел
+        viewer.addEventListener('error', (event) => {
+            console.error("Ошибка загрузки модели по пути:", event.detail.url);
+        });
     </script>
-
-    <script type="module" src="./src/main.js"></script>
-
 </body>
 </html>
