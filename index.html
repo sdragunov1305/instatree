@@ -9,22 +9,17 @@
 </head>
 <body>
 
-    <model-viewer 
-        id="tree-viewer"
-        src="assets/models/tree_level_1.glb" 
-        alt="3D Tree"
-        camera-controls
-        disable-zoom
-        shadow-intensity="1"
-        environment-image="neutral"
-        exposure="1"
-        interaction-prompt="none"
-        /* Настройка под большое дерево: 15 метров дистанция */
-        camera-orbit="0deg 80deg 20m" 
-        /* Центрируем камеру чуть выше земли */
-        camera-target="0m 5m 0m"
-        field-of-view="30deg">
-    </model-viewer>
+   <model-viewer 
+    id="tree-viewer"
+    src="assets/models/tree_level_1.glb" 
+    ar 
+    ar-modes="webxr scene-viewer quick-look" 
+    camera-controls 
+    touch-action="pan-y"
+    shadow-intensity="1"
+    camera-orbit="0deg 75deg 15m"
+    camera-target="0m 4m 0m">
+</model-viewer>
 
     <script src="main.js"></script>
 </body>
