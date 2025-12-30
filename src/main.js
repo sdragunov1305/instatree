@@ -1,6 +1,5 @@
 const viewer = document.querySelector('#tree-viewer');
 
-// Пути БЕЗ слова public
 const models = [
     'assets/models/tree_level_1.glb',
     'assets/models/tree_level_2.glb',
@@ -14,28 +13,29 @@ let currentIdx = 0;
 function updateTree() {
     if (!viewer) return;
 
-    // Сохраняем положение камеры
+    // 1. Запоминаем текущий ракурс (даже если пользователь крутил дерево)
     const currentOrbit = viewer.getCameraOrbit();
     const currentTarget = viewer.getCameraTarget();
 
     currentIdx = (currentIdx + 1) % models.length;
     
-    // Меняем модель
+    // 2. Меняем путь к файлу
     viewer.src = models[currentIdx];
 
-    // Возвращаем камеру после загрузки
+    // 3. После загрузки новой модели принудительно возвращаем старую камеру
+    // Это не даст маленькому дереву "увеличиться" под объектив
     viewer.addEventListener('load', () => {
         viewer.cameraOrbit = currentOrbit.toString();
         viewer.cameraTarget = currentTarget.toString();
     }, { once: true });
 
-    console.log("Загружена стадия:", models[currentIdx]);
+    console.log("Stage loaded:", models[currentIdx]);
 }
 
-// Интервал 30 секунд
+// Переключение каждые 30 секунд
 setInterval(updateTree, 30000);
 
-// Лог ошибок в консоль
+// Отладка ошибок
 viewer.addEventListener('error', (e) => {
-    console.error("Файл не найден по пути:", e.detail.url);
+    console.error("Path error:", e.detail.url);
 });
