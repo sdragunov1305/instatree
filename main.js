@@ -37,4 +37,4 @@ function updateTree() {
 }
 
 // Интервал 30 секунд
-setInterval(updateTree, 300);
+setInterval(updateTree, 50);
