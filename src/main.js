@@ -12,7 +12,7 @@ const models = [
 let currentIdx = 0;
 
 function updateTree() {
-    // 1. Считываем текущее положение камеры перед сменой модели
+    // 1. Считываем текущее положение камеры пере сменой модели
     const currentOrbit = viewer.getCameraOrbit();
     const currentTarget = viewer.getCameraTarget();
 
