@@ -15,13 +15,15 @@
 <body>
 
     <model-viewer 
-        id="tree-viewer"
-        src="public/assets/models/tree_level_1.glb" 
-        alt="3D Tree"
-        auto-rotate 
-        camera-controls
-        touch-action="none">
-    </model-viewer>
+    id="tree-viewer"
+    src="assets/models/tree_level_1.glb" 
+    alt="3D Tree"
+    auto-rotate 
+    camera-controls
+    interpolation-decay="200"
+    shadow-intensity="1"
+    touch-action="none">
+</model-viewer>
 
     <script>
         // ПОПРОБУЙТЕ ПОМЕНЯТЬ ЭТУ СТРОКУ, ЕСЛИ ОШИБКА ОСТАНЕТСЯ:
