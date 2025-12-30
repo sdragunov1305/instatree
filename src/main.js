@@ -1,6 +1,6 @@
 const viewer = document.querySelector('#tree-viewer');
 
-// Массив путей к вашим моделям
+// Пути БЕЗ слова public
 const models = [
     'assets/models/tree_level_1.glb',
     'assets/models/tree_level_2.glb',
@@ -12,29 +12,30 @@ const models = [
 let currentIdx = 0;
 
 function updateTree() {
-    // 1. Считываем текущее положение камеры пере сменой модели
+    if (!viewer) return;
+
+    // Сохраняем положение камеры
     const currentOrbit = viewer.getCameraOrbit();
     const currentTarget = viewer.getCameraTarget();
 
-    // 2. Рассчитываем индекс следующей модели (1-2-3-4-5-1...)
     currentIdx = (currentIdx + 1) % models.length;
     
-    // 3. Устанавливаем новый источник файла
+    // Меняем модель
     viewer.src = models[currentIdx];
 
-    // 4. После того как новая модель загрузится, возвращаем камеру на место
+    // Возвращаем камеру после загрузки
     viewer.addEventListener('load', () => {
         viewer.cameraOrbit = currentOrbit.toString();
         viewer.cameraTarget = currentTarget.toString();
     }, { once: true });
 
-    console.log(`Загружена модель: ${models[currentIdx]}`);
+    console.log("Загружена стадия:", models[currentIdx]);
 }
 
-// Запуск автоматического переключения каждые 30 секунд (30000 мс)
+// Интервал 30 секунд
 setInterval(updateTree, 30000);
 
-// Обработчик ошибок для проверки путей в консоли
+// Лог ошибок в консоль
 viewer.addEventListener('error', (e) => {
-    console.error("Ошибка! Проверьте, что файл лежит по пути:", e.detail.url);
+    console.error("Файл не найден по пути:", e.detail.url);
 });
