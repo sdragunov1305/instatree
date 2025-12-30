@@ -1,78 +1,40 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+const viewer = document.querySelector('#tree-viewer');
 
-// 1. СЦЕНА И КАМЕРА
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x1a1a1a);
+// Автоматически определяем путь (для GitHub Pages это /instatree/)
+const baseUrl = window.location.pathname.endsWith('/') 
+    ? window.location.pathname 
+    : window.location.pathname + '/';
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 2, 5);
+const models = [
+    'assets/models/tree_level_1.glb',
+    'assets/models/tree_level_2.glb',
+    'assets/models/tree_level_3.glb',
+    'assets/models/tree_level_4.glb',
+    'assets/models/tree_level_5.glb'
+];
 
-// 2. РЕНДЕРЕР
-const renderer = new THREE.WebGLRenderer({
-    canvas: document.querySelector('#bg'),
-    antialias: true
-});
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
+let currentIdx = 0;
 
-// 3. СВЕТ
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-scene.add(ambientLight);
+function updateTree() {
+    if (!viewer) return;
 
-const pointLight = new THREE.PointLight(0xffffff, 1.2);
-pointLight.position.set(5, 5, 5);
-scene.add(pointLight);
+    // Сохраняем текущий ракурс
+    const currentOrbit = viewer.getCameraOrbit();
+    const currentTarget = viewer.getCameraTarget();
 
-// 4. ТЕСТОВЫЙ ОБЪЕКТ (появится сразу)
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshStandardMaterial({ color: 0x4CAF50 });
-const placeholderCube = new THREE.Mesh(geometry, material);
-scene.add(placeholderCube); // Если видим куб - JS работает!
-
-// 5. УПРАВЛЕНИЕ МЫШКОЙ
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-
-// 6. ЗАГРУЗКА ВАШЕГО ДЕРЕВА
-const loader = new GLTFLoader();
-
-// ВНИМАНИЕ: Проверьте этот путь! 
-// Если на GitHub Pages будет 404, попробуйте изменить на './assets/models/tree_level_1.glb'
-loader.load('./public/assets/models/tree_level_1.glb', 
-    (gltf) => {
-        scene.remove(placeholderCube); // Убираем куб
-        scene.add(gltf.scene);         // Добавляем дерево
-        console.log("Дерево загружено!");
-    },
-    (xhr) => {
-        console.log((xhr.loaded / xhr.total * 100) + '% загружено');
-    },
-    (error) => {
-        console.warn("Модель не загружена, используем куб. Причина:", error.message);
-    }
-);
-
-// 7. ЦИКЛ ОБНОВЛЕНИЯ
-function animate() {
-    requestAnimationFrame(animate);
+    currentIdx = (currentIdx + 1) % models.length;
     
-    // Вращаем куб для динамики (пока дерево не загрузилось)
-    if (placeholderCube) {
-        placeholderCube.rotation.x += 0.01;
-        placeholderCube.rotation.y += 0.01;
-    }
+    // Формируем полный путь
+    viewer.src = models[currentIdx];
 
-    controls.update();
-    renderer.render(scene, camera);
+    // Фиксируем камеру после загрузки
+    const onModelLoad = () => {
+        viewer.cameraOrbit = currentOrbit.toString();
+        viewer.cameraTarget = currentTarget.toString();
+    };
+
+    viewer.addEventListener('load', onModelLoad, { once: true });
 }
 
-// Подстройка под размер экрана
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-animate();
+// Интервал 30 секунд
+setInterval(updateTree, 30000);
